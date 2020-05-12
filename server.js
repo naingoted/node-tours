@@ -1,7 +1,30 @@
 const dotenv = require('dotenv');
 const app = require('./app');
-
+const mongoose = require('mongoose');
 dotenv.config({ path: './config.env' });
+const DB = process.env.DATABASE;
+
+console.log(DB)
+const options = {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+    useFindAndModify: false,
+    // autoIndex: false, // Don't build indexes
+    // poolSize: 10, // Maintain up to 10 socket connections
+    // serverSelectionTimeoutMS: 5000, // Keep trying to send operations for 5 seconds
+    // socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
+    // family: 4 // Use IPv4, skip trying IPåv6
+  };
+
+mongoose.connect(DB,options).then(
+    () => console.log("db connection")
+)
+
+
+
+
+
 const port = process.env.PORT || 3000;
 app.listen(port, () => { 
     console.log(`App running on port ${port} ...`);
