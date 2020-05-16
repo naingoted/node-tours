@@ -1,8 +1,12 @@
 const express = require('express');
 const userController = require('./../controllers/userControllers');
-
+const authController = require('./../controllers/authControllers');
 const router = express.Router();
 
+// router.route('/signup').post(authController.signup); can't pass in middleware like this.
+
+router.post('/signup', authController.signup);
+router.post('/login', authController.login);
 router.route('/')
 .get(userController.getAllUsers)
 .post(userController.createUser);
@@ -14,3 +18,4 @@ router.route('/:id')
 .delete(userController.deleteUser);
 
 module.exports = router;
+
