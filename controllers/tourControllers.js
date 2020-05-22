@@ -2,6 +2,7 @@ const fs = require('fs');
 const Tour = require('../models/tourModel');
 const APIFeatures = require('../utils/apiFeatures') 
 const catchAsync = require('../utils/catchAsync') 
+const factory = require('./handlerFactory')
 
 exports.aliasTopTours = (req,res, next) => {
     req.query.limit = '5';
@@ -10,66 +11,15 @@ exports.aliasTopTours = (req,res, next) => {
     next();
 }
 
-exports.getAllTours = catchAsync(async (req, res) => {
-    if(req.query.page) {
-        const numTours = await Tour.countDocuments();
-        if (skip >= numTours) throw new Error('this page doesn\'t exist');
-    } 
-    const features = new APIFeatures(req.query, Tour.find()).filter().sort().limitFields().paginate()
-    const tours = await features.query;
-    res.status(201).json({
-        status: 'successs',
-        results: tours.length,
-        data: {
-            tours
-        }
-    });
-});
+exports.getAllTours = factory.getAll(Tour);
 
-exports.getTour = catchAsync(async (req, res) => {
+exports.getTour = factory.getOne(Tour);
 
-    const tour = await Tour.findById(req.params.id, (x) => console.log(x))
+exports.createTour = factory.createOne(Tour);
 
-    res.status(201).json({
-        status: 'success',
-        data: {
-            tour
-        }
-    });
+exports.updateTour = factory.updateOne(Tour);
 
-})
-
-exports.createTour = catchAsync(async (req, res) => {
-    const newTour = await Tour.create(req.body)
-    res.status(201).json({
-        status: 'success',
-        data: {
-            newTour
-        }
-    });
-})
-
-exports.updateTour = catchAsync(async (req, res) => {
-    const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
-        new: true,
-        runValidators: true
-    })
-    res.status(200).json({
-        status: 'success',
-        data: {
-            tour
-        }
-    })
-})
-
-exports.deleteTour = catchAsync(async (req, res) => {
-    const tour = await Tour.findByIdAndDelete(req.params.id)
-    // watch out for 204 , it return blank page
-    res.status(204).json({
-        status: 'success',
-        data: null
-    });  
-})
+exports.deleteTour = factory.deleteOne(Tour);
 
 exports.getTourStats = catchAsync(async (req, res) => {
     console.log("getting tour stats")

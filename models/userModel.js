@@ -62,7 +62,7 @@ userSchema.pre('save', async function(next){
     this.passwordChangedAt = Date.now() - 1000;
     next()
 })
-// only show use with active roles
+// only show user with active roles
 userSchema.pre(/^find/, async function(next){
     this.find({  active: {$ne: false}})
     next();
