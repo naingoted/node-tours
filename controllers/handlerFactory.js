@@ -39,8 +39,10 @@ exports.createOne = Model => catchAsync(async (req, res) => {
     });
 })
 
-exports.getOne = Model => catchAsync(async (req, res, next) => {
-    const doc = await Model.findById(req.params.id)
+exports.getOne = (Model, popOptions) => catchAsync(async (req, res, next) => {
+    let query = Model.findById(req.params.id);
+    if (popOptions) query = query.populate(popOptions);
+    const doc = await query;
     if (!doc) {
         return next(new AppError('No document found with that ID', 404));
     }
@@ -58,8 +60,12 @@ exports.getAll = Model => catchAsync(async (req, res) => {
         const numDocs = await Model.countDocuments();
         if (skip >= numDocs) throw new Error('this page doesn\'t exist');
     } 
-    const features = new APIFeatures(req.query, Model.find()).filter().sort().limitFields().paginate()
+    let filter = {};
+    if (req.params.tourId) filter = { tour: req.params.tourId };
+
+    const features = new APIFeatures(req.query, Model.find(filter)).filter().sort().limitFields().paginate()
     const docs = await features.query;
+    // const docs = await features.query.explain();
     res.status(201).json({
         status: 'successs',
         results: docs.length,
