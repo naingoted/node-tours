@@ -80,6 +80,7 @@ const tourSchema = new mongoose.Schema(
       default: false
     },
     startLocation: {
+      // GeoJSON
       type: {
         type: String,
         default: 'Point',
@@ -98,7 +99,8 @@ const tourSchema = new mongoose.Schema(
         },
         coordinates: [Number],
         address: String,
-        description: String
+        description: String,
+        day: Number
       }
     ],
     guides: [
@@ -154,10 +156,10 @@ tourSchema.post(/^find/, function(docs, next) {
 });
 
 // aggregate middleware, remove secretTour
-tourSchema.pre('aggregate', function(next) {
-  this.pipeline().unshift({ $match: {secretTour: {$ne: true}}});
-  next();
-})
+// tourSchema.pre('aggregate', function(next) {
+//   this.pipeline().unshift({ $match: {secretTour: {$ne: true}}});
+//   next();
+// })
 
 const Tour = mongoose.model('Tour', tourSchema);
 

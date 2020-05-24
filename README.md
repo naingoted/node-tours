@@ -10,7 +10,9 @@
     tours -> bookings
     users -> bookings
 
-# 
+# api documentation
+
+    https://documenter.getpostman.com/view/2054414/Szt8eq8B
 
 # indexs
 
