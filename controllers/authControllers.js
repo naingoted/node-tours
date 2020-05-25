@@ -55,7 +55,7 @@ exports.login = catchAsync(async (req, res, next) => {
         return next(new AppError('Incorrect email or password', 401))
     }
     // 3) if everything is correct, send token to client
-    createSendToken(user, 201, res);
+    createSendToken(user, 200, res);
 })
 
 exports.protect = catchAsync(async (req, res, next) => {
@@ -89,7 +89,7 @@ exports.protect = catchAsync(async (req, res, next) => {
       )
     );
   }
-
+  console.log(currentUser);
   // 4) Check if user changed password after the token was issued
   if (currentUser.changedPasswordAfter(decoded.iat)) {
     return next(
@@ -167,7 +167,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
     user.passwordResetExpires = undefined;
     await user.save();
 
-  // 3) Update changedPasswordAt property for the user
+  // 3) Update changedPasswordAfterAt property for the user
   // 4) Log the user in, send JWT
     createSendToken(user, 200, res);
 
@@ -206,7 +206,9 @@ exports.isLoggedIn = async (req, res, next) => {
       if (!currentUser) {
         return next();
       }
+      console.log(currentUser);
       // 3) Check if user changed password after the token was issued
+      // console.log("isLoggedIn", await currentUser.changedPasswordAfter(decoded.iat))
       if (currentUser.changedPasswordAfter(decoded.iat)) {
         return next();
       }
@@ -220,3 +222,11 @@ exports.isLoggedIn = async (req, res, next) => {
   }
   next();
 }
+
+exports.logout = (req, res) => {
+  res.cookie('jwt', 'loggedout', {
+    expires: new Date(Date.now() + 10 * 1000),
+    httpOnly: true
+  });
+  res.status(200).json({ status: 'success' });
+};
