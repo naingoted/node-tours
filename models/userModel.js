@@ -16,7 +16,10 @@ const userSchema = new mongoose.Schema({
         lowercase: true,
         validate: [validator.isEmail, 'Please provide a valid email']
     },
-    photo: String,
+    photo: {
+        type: String,
+        default: 'default.jpg'
+    },
     password: {
         type: String,
         require: [true, 'please provide a password'],
@@ -74,12 +77,12 @@ userSchema.methods.correctPassword = async function(
     return await bcrypt.compare(candidatePassword, userPassword);
 }
 userSchema.methods.changedPasswordAfter = function(JWTTimestamp) {
-    console.log("this", this.passwordChangedAt);
+    // console.log("this", this.passwordChangedAt);
     if (this.passwordChangedAt) {
         const changedTimeStamp = parseInt(
             this.passwordChangedAt.getTime() / 1000, 10
         )
-        console.log("changedPasswordAfter", JWTTimestamp < changedTimeStamp);
+        // console.log("changedPasswordAfter", JWTTimestamp < changedTimeStamp);
         return JWTTimestamp < changedTimeStamp
     }
     
@@ -90,7 +93,7 @@ userSchema.methods.generatePassResetToken = function() {
     const resetToken = crypto.randomBytes(32).toString('hex');
 
     this.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
-    console.log({ resetToken }, this.passwordResetToken);
+    // console.log({ resetToken }, this.passwordResetToken);
     this.passwordResetExpires = Date.now() + 10*60*1000; // 10 minutes
     return resetToken;
 }

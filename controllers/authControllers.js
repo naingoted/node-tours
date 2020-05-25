@@ -89,7 +89,7 @@ exports.protect = catchAsync(async (req, res, next) => {
       )
     );
   }
-  console.log(currentUser);
+  // console.log(currentUser);
   // 4) Check if user changed password after the token was issued
   if (currentUser.changedPasswordAfter(decoded.iat)) {
     return next(
@@ -129,7 +129,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   )}/api/v1/users/resetPassword/${resetToken}`;
 
   const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL}.\nIf you didn't forget your password, please ignore this email!`;
-  console.log(message);
+  // console.log(message);
   try {
     await sendEmail({
       email: user.email,
@@ -206,7 +206,7 @@ exports.isLoggedIn = async (req, res, next) => {
       if (!currentUser) {
         return next();
       }
-      console.log(currentUser);
+      // console.log(currentUser);
       // 3) Check if user changed password after the token was issued
       // console.log("isLoggedIn", await currentUser.changedPasswordAfter(decoded.iat))
       if (currentUser.changedPasswordAfter(decoded.iat)) {
