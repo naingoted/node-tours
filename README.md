@@ -23,3 +23,7 @@
     tourSchema.index({ startLocation: '2dsphere' });
 
     indexing consume rource on create and update. Have to compare frequency of read write ratio before creating index
+    
+# production
+
+    https://whispering-mountain-15129.herokuapp.com/
