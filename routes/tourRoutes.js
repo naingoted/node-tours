@@ -23,15 +23,23 @@ router.route('/tours-within/:distance/center/:latlng/unit/:unit').get(tourContro
 router.route('/distances/:latlng/unit/:unit').get(tourController.getToursNearby);
 router.route('/')
 .get(authController.protect, tourController.getAllTours)
-.post(tourController.createTour);
+.post(
+    authController.protect,
+    authController.restrictTo('admin', 'lead-guide'),
+    tourController.createTour);
 
 
 router.route('/:id')
 .get(tourController.getTour)
 .patch(
+    authController.protect, 
+    authController.restrictTo('admin', 'lead-guide'),
     tourController.uploadTourImages,
     tourController.resizeTourImages,
     tourController.updateTour)
-.delete(authController.protect, authController.restrictTo('admin', 'lead-guide'),tourController.deleteTour);
+.delete(
+    authController.protect, 
+    authController.restrictTo('admin', 'lead-guide'),
+    tourController.deleteTour);
 
 module.exports = router;

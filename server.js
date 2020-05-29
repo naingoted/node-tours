@@ -33,10 +33,19 @@ const server = app.listen(port, () => {
     console.log(`App running on port ${port} ...`);
 });
 
+// gracefull shutdown on internal errors.
 process.on('unhandledRejection', err => {
     console.log('UNHANDLED REJECTION! 💥 Shutting down...');
-    console.log(err.name, err.message);
+    console.log(err.name, err.message);   
     server.close(() => {
       process.exit(1);
     });
   });
+
+// gracefull shutdown on heroku sleep cmds.
+process.on('SIGTERM', () => {
+  console.log('👋 SIGTERM RECEIVED. Shutting down gracefully');
+  server.close(() => {
+    console.log('💥 Process terminated!');
+  });
+});

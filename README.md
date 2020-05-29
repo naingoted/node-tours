@@ -27,3 +27,10 @@
 # production
 
     https://whispering-mountain-15129.herokuapp.com/
+
+# deployment
+
+    heroku login
+    git commit -m "" && git push heroku master
+    heroku config:set STRIPE_WEBHOOK_SECRET=yourkey
+    heroku logs
